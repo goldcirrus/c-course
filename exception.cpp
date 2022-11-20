@@ -1,95 +1,88 @@
-
 #include <iostream>
-#include <exception>
+#include <stdio.h>
+#include<conio.h>
+#include <stdexcept>
+#include <iostream>
+#include <stdio.h>
+#include<conio.h>
+#include <stdexcept>
 
 using namespace std;
 
-/* Derived exception class */
-class OverSpeed : public exception{
-  int speed;
-public :
-    //override base class(exception)'s virtual function what() to represent error message
-  const char* what(){
-      return "error message: check up your speed!";
-  }
+//prototype of generic functions
+template <typename T> T multiply(T n1, T n2);
+template <typename T> T divide(T numerator, T denominator);
 
-  void getSpeed()
-  {
-      cout <<"Your car speed is" << speed<< endl;
-  }
-
-  void setSpeed(int sp)
-  {
-      this->speed=sp;
-  }
-};
-
-
-// create another class to make ZeroSpeed. when speed exceeds 250, this exception is called and after that it should again start increasing the speed
-class Car{
-  int speed;
-public:
-  Car()   //constructor
- {
-    speed=0;
-    cout <<"speed is zero"<< endl;
- }
-
-   void accelerate()
-   {
-      for (;;)
-     {    speed += 10;
-          cout << "Speed is " << speed << endl;
-
-          if (speed >= 250)   //if something wrong, to create exception Overspeed object
-          {
-             OverSpeed os;         //os can throw error message(exception) and setSpeed value for calling program to getSpeed
-             os.setSpeed(speed);
-             throw os;             //throw a OverSpeed exception object os(contains error message in its what() function)
-          }
-     }
-   }
-};
-
-int main()
+int main ()
 {
-   int a=2,b=3;
-   float  d;
+    cout<<"test on int data type. \n";
+  int num1, num2, answer;
 
-   try
-   {
-              if((a-b)!=0)
-              {
-                 d=5/(a-b);
-                 cout<<"Result is:"<<d<<endl;
-              }
-              else
-              {
-                 throw(a-b);  //throw an integer variable
-              }
-   }
+  cout << "Please enter integer 1 : ";
+  cin >> num1;
+  cout << "Please enter integer 2 : ";
+  cin >> num2;
 
-   catch(int i)     //catch an integer number, then doing an action with catched integer variable
-   {
-              cout<<"Exception thrown! Answer is infinite as denominator is:"<<i;
-   }
+  answer = multiply(num1, num2);
+  cout << "The multiplication of " << num1 << " * " << num2 << " = " << answer;
+
+  try
+  {
+     answer = divide(num1, num2);
+     cout << "\nThe quotient of " << num1 << " / " << num2 << " = " << answer;
+  }
+  catch(const runtime_error& e)
+  {
+      cout<<"\nException thrown as "<<e.what()<<endl;
+  }                                  //.what() print out error message
 
 
 
-    Car c;
+  cout<<"\n\ntest on double data type. \n";
+  double dnum1, dnum2, danswer;
+  // test by changing float to int or double. Do you have any other change in the program?
+  cout << "Please enter double type data 1 : ";
+  cin >> dnum1;
+  cout << "Please enter double type data 2 : ";
+  cin >> dnum2;
 
-    try{
-        c.accelerate();
-    }
-    catch (OverSpeed s)  //catch the OverSpeed object:s. s has its member function being called: error message for .what(), and speed value for .getSpeed()
-    {                      //then, doing actions with catched OverSpeed object
+  danswer = multiply(dnum1, dnum2);
+  cout << "The multiplication of " << dnum1 << " * " << dnum2 << " = " << danswer;
 
-        cout << s.what() <<endl;
-        s.getSpeed();
 
-    }
+  try
+  {
+     danswer = divide(dnum1, dnum2);
+     cout << "\nThe quotient of " << dnum1 << " / " << dnum2 << " = " << danswer;
+  }
+  catch(const runtime_error& e)
+  {
+      cout<<"\nException thrown as "<<e.what()<<endl;
+  }
 
-    return 0;
-
+  return 0;
 }
 
+
+//define generic functions
+// function's class/template parameter:T    return type:T
+template <typename T> T multiply(T n1, T n2)
+{
+    T result = n1*n2;
+    return result;
+}
+
+template <typename T> T divide(T numerator, T denominator)
+{
+       T result;
+
+       if(static_cast<double>(denominator) != 0.0)
+       {
+           result = numerator/denominator;
+           return result;
+       }
+       else
+       {
+           throw runtime_error("divided by 0 error!");  //keyword throw followed by an operand of the type of exception
+       }       // override the .what() error message
+}
